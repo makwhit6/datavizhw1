@@ -1,0 +1,2 @@
+# Read me, Seymour!
+The Open University Learning Analytics dataset associated with this repo is too large to house on GitHub. If you would like to reproduce the plots shown here, you may download it either from [Kaggle](https://www.kaggle.com/rocki37/open-university-learning-analytics-dataset) (requires you create an account with Kaggle) or directly from the [organization](https://analyse.kmi.open.ac.uk/open_dataset).
