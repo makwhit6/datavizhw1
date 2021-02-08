@@ -11,4 +11,55 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(here)
+library(tidyverse)
+```
+
+```{r Read in Data}
+here::here("data")
+
+assessments <- read_csv(here("data", "assessments.csv"))
+courses     <- read_csv(here("data", "courses.csv"))
+stu_assess  <- read_csv(here("data", "studentAssessment.csv"))
+stu_info    <- read_csv(here("data", "studentInfo.csv"))
+stu_reg     <- read_csv(here("data", "studentRegistration.csv"))
+stu_vle     <- read_csv(here("data", "studentVle.csv"))
+vle         <- read_csv(here("data", "vle.csv"))
+```
+
+
+```{r Mutating Join 1}
+
+```
+
+```{r Mutating Join 2}
+
+```
+
+```{r Mutating Join 3}
+
+```
+
+```{r Filtering Join}
+
+```
+
+```{r Data Display 1}
+
+```
+
+```{r Data Display 2}
+
+```
+
+```{r Data Display 3}
+
+```
+
+```{r Reproduced Figure}
+
+```
+
+```{r Extra Credit (Optional)}
+
 ```
