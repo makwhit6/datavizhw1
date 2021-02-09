@@ -42,18 +42,17 @@ MJ1 <- left_join(stu_info, stu_assess) %>%
   summarise(score = mean(score, na.rm = TRUE)) %>% 
   mutate(highest_education = as.factor(highest_education)) %>% 
   mutate(highest_education = fct_relevel(highest_education,
-             "Post Graduate Qualification",
-             "HE Qualification",
-             "A Level or Equivalent",
+             "No Formal quals",
              "Lower Than A Level",
-             "No Formal quals")) %>%
-  
-  #So my attempt at a fct_relevel produced the opposite of what I wanted...
-  #but that's still something! Now just to figure out how to flip it. Hmmm
-  
+             "A Level or Equivalent",
+             "HE Qualification",
+             "Post Graduate Qualification")) %>%
   ggplot(aes(score, highest_education, color = gender)) +
     geom_point() +
-  facet_wrap(~final_result)
+  facet_wrap(~final_result) +
+  labs(x = "Average Score",
+       y = "Highest Education ") +
+  scale_color_manual(values = c("#66B2FF", "#0066CC"))
 
 ```
 
