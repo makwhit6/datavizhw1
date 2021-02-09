@@ -13,6 +13,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(here)
 library(tidyverse)
+library(dplyr)
 ```
 
 ```{r Read in Data}
@@ -29,6 +30,19 @@ vle         <- read_csv(here("data", "vle.csv"))
 
 
 ```{r Mutating Join 1}
+
+MJ1 <- left_join(stu_info, stu_assess) %>% 
+  select(id_student,
+         final_result,
+         highest_education,
+         gender,
+         score) %>% 
+  mutate(score = as.numeric(score)) %>% 
+  group_by(highest_education, gender, final_result) %>% 
+  summarise(score = mean(score, na.rm = TRUE)) %>% 
+  ggplot(aes(score, highest_education, color = gender)) +
+    geom_point() +
+  facet_wrap(~final_result)
 
 ```
 
