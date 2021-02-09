@@ -57,7 +57,13 @@ MJ1 <- left_join(stu_info, stu_assess) %>%
 ```
 
 ```{r Mutating Join 2}
-
+MJ2 <- left_join(stu_vle, vle) %>% 
+  select(code_module,
+         code_presentation,
+         id_student,
+         sum_click,
+         activity_type) %>% 
+  mutate(activity_type = factor(activity_type))
 ```
 
 ```{r Mutating Join 3}
