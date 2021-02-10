@@ -92,6 +92,11 @@ MJ2 <- left_join(stu_vle, vle) %>%
                                            "repeatactivity"))) %>% 
   group_by(id_student, activity_type, code_presentation, code_module) %>% 
   summarize(sum_click = sum(sum_click))
+
+course_click <- MJ2 %>% 
+  group_by(activity_type, code_module) %>% 
+  summarize(total_sum = sum(sum_click)) %>% 
+  filter(code_module == "GGG")
 ```
 
 ```{r Data Display 2}
@@ -99,22 +104,21 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
                                         "forumng",
                                         "quiz",
                                         "homepage",
-                                        "subpage",
-                                        "resource",
-                                        "ouwiki",
-                                        "url",
-                                        "oucollaborate",
-                                        "glossary")),
-              aes(activity_type, sum_click)) +
+                                        "subpage")),
+              aes(code_module, sum_click)) +
   geom_jitter(color = "gray70",
                   alpha = .4, 
                   width = .2,
                   height = .5,
                   show.legend = FALSE) +
   gghighlight(calculate_per_facet = TRUE) +
-  facet_grid(cols = vars(code_module)) +
+  facet_grid(cols = vars(activity_type)) +
   coord_flip() +
-  theme_minimal()
+  theme_minimal() +
+  labs(title = "Student Interaction with Course Content",
+       caption = "Plot shows top 5 most interacted with content areas.",
+       y = "Number of student clicks per course",
+       x = "")
 ```
 
 ```{r Mutating Join 3}
