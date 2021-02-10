@@ -56,6 +56,10 @@ MJ1 <- left_join(stu_info, stu_assess) %>%
 
 ```
 
+```{r Data Display 1}
+
+```
+
 ```{r Mutating Join 2}
 MJ2 <- left_join(stu_vle, vle) %>% 
   select(code_module,
@@ -63,26 +67,51 @@ MJ2 <- left_join(stu_vle, vle) %>%
          id_student,
          sum_click,
          activity_type) %>% 
-  mutate(activity_type = factor(activity_type))
+  mutate(activity_type = factor(activity_type,
+                                levels = c( "oucontent",
+             "forumng",
+             "quiz",
+             "homepage",
+             "subpage",
+             "resource",
+             "ouwiki",
+             "url",
+             "oucollaborate",
+             "glossary",
+             "questionnaire",
+             "externalquiz",
+             "page",
+             "dataplus",
+             "ouelluminate",
+             "dualpane",
+             "htmlactivity",
+             "folder",
+             "sharedsubpage",
+             "repeatactivity"))) %>% 
+  group_by(id_student, activity_type, code_presentation, code_module) %>% 
+  summarize(sum_click = sum(sum_click))
+
+fctr <- MJ2 %>% 
+  group_by(activity_type) %>% 
+  summarize(sum = sum(sum_click))
+
+```
+
+```{r Data Display 2}
+ggplot(MJ2, aes(activity_type, sum_click)) +
+  geom_jitter() +
+  coord_flip()
 ```
 
 ```{r Mutating Join 3}
 
 ```
 
-```{r Filtering Join}
-
-```
-
-```{r Data Display 1}
-
-```
-
-```{r Data Display 2}
-
-```
-
 ```{r Data Display 3}
+
+```
+
+```{r Filtering Join}
 
 ```
 
