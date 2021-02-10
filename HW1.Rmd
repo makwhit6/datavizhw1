@@ -128,12 +128,10 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
 ```{r Filtering Join}
 
 stu_assess_avg <- stu_assess %>%
-  mutate(score_avg = mean(score) + 3*sd(score)) %>%
-  group_by(id_student, date_submitted) %>%
-  summarize(stu_assess_avg = mean(score),
-            score_avg = unique(score_avg))
+  mutate(stu_assess_avg = mean(score)) %>%
+  group_by(id_assessment) %>%
+  summarize(stu_assess_avg = unique(stu_assess_avg))
 
-stu_assess_avg
   
 
 ```
@@ -152,5 +150,18 @@ ggplot(MJ1, aes(score, highest_education, color = gender)) +
 ```
 
 ```{r Extra Credit (Optional)}
+
+higher_mean <- MJ1 %>%
+  mutate(higher_mean = mean(score)) %>%
+  summarize(higher_mean = unique(higher_mean))
+
+ggplot(MJ1, aes(score, highest_education, color = gender)) +
+  geom_line(color = higher_mean, size = 2) +
+  geom_point(size = 3) +
+  facet_wrap(~final_result) +
+  labs(x = "Average Score",
+       y = "Highest Education ") +
+  scale_color_manual(values = c("#66B2FF", "#0066CC")) +
+  theme_minimal()
 
 ```
