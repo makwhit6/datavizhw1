@@ -47,17 +47,18 @@ MJ1 <- left_join(stu_info, stu_assess) %>%
              "Lower Than A Level",
              "A Level or Equivalent",
              "HE Qualification",
-             "Post Graduate Qualification")) %>%
-  ggplot(aes(score, highest_education, color = gender)) +
+             "Post Graduate Qualification"))
+
+```
+
+```{r Data Display 1}
+
+ggplot(MJ1, aes(score, highest_education, color = gender)) +
     geom_point() +
   facet_wrap(~final_result) +
   labs(x = "Average Score",
        y = "Highest Education ") +
   scale_color_manual(values = c("#66B2FF", "#0066CC"))
-
-```
-
-```{r Data Display 1}
 
 ```
 
@@ -129,6 +130,15 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
 ```
 
 ```{r Reproduced Figure}
+
+ggplot(MJ1, aes(score, highest_education, color = gender)) +
+  geom_line(color = "#636363", size = 2) +
+  geom_point(size = 3) +
+  facet_wrap(~final_result) +
+  labs(x = "Average Score",
+       y = "Highest Education ") +
+  scale_color_manual(values = c("#66B2FF", "#0066CC")) +
+  theme_minimal()
 
 ```
 
