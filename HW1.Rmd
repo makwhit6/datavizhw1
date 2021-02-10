@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(here)
 library(tidyverse)
 library(dplyr)
+library(gghighlight)
 ```
 
 ```{r Read in Data}
@@ -68,39 +69,51 @@ MJ2 <- left_join(stu_vle, vle) %>%
          sum_click,
          activity_type) %>% 
   mutate(activity_type = factor(activity_type,
-                                levels = c( "oucontent",
-             "forumng",
-             "quiz",
-             "homepage",
-             "subpage",
-             "resource",
-             "ouwiki",
-             "url",
-             "oucollaborate",
-             "glossary",
-             "questionnaire",
-             "externalquiz",
-             "page",
-             "dataplus",
-             "ouelluminate",
-             "dualpane",
-             "htmlactivity",
-             "folder",
-             "sharedsubpage",
-             "repeatactivity"))) %>% 
+                                levels = c("oucontent",
+                                           "forumng",
+                                           "quiz",
+                                           "homepage",
+                                           "subpage",
+                                           "resource",
+                                           "ouwiki",
+                                           "url",
+                                           "oucollaborate",
+                                           "glossary",
+                                           "questionnaire",
+                                           "externalquiz",
+                                           "page",
+                                           "dataplus",
+                                           "ouelluminate",
+                                           "dualpane",
+                                           "htmlactivity",
+                                           "folder",
+                                           "sharedsubpage",
+                                           "repeatactivity"))) %>% 
   group_by(id_student, activity_type, code_presentation, code_module) %>% 
   summarize(sum_click = sum(sum_click))
-
-fctr <- MJ2 %>% 
-  group_by(activity_type) %>% 
-  summarize(sum = sum(sum_click))
-
 ```
 
 ```{r Data Display 2}
-ggplot(MJ2, aes(activity_type, sum_click)) +
-  geom_jitter() +
-  coord_flip()
+ggplot(subset(MJ2, activity_type %in% c("oucontent",
+                                        "forumng",
+                                        "quiz",
+                                        "homepage",
+                                        "subpage",
+                                        "resource",
+                                        "ouwiki",
+                                        "url",
+                                        "oucollaborate",
+                                        "glossary")),
+              aes(activity_type, sum_click)) +
+  geom_jitter(color = "gray70",
+                  alpha = .4, 
+                  width = .2,
+                  height = .5,
+                  show.legend = FALSE) +
+  gghighlight(calculate_per_facet = TRUE) +
+  facet_grid(cols = vars(code_module)) +
+  coord_flip() +
+  theme_minimal()
 ```
 
 ```{r Mutating Join 3}
