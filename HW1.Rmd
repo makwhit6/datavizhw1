@@ -127,6 +127,15 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
 
 ```{r Filtering Join}
 
+stu_assess_avg <- stu_assess %>%
+  mutate(score_avg = mean(score) + 3*sd(score)) %>%
+  group_by(id_student, date_submitted) %>%
+  summarize(stu_assess_avg = mean(score),
+            score_avg = unique(score_avg))
+
+stu_assess_avg
+  
+
 ```
 
 ```{r Reproduced Figure}
