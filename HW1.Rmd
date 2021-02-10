@@ -129,7 +129,6 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
 
 stu_assess_avg <- stu_assess %>%
   mutate(score = as.numeric(score)) %>% 
-  # mutate(score_avg = mean(score) + 3*sd(score)) %>%
   group_by(id_student) %>%
   summarize(stu_assess_avg = mean(score) + 3*sd(score))
 
