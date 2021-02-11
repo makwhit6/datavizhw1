@@ -91,12 +91,45 @@ MJ2 <- left_join(stu_vle, vle) %>%
                                            "sharedsubpage",
                                            "repeatactivity"))) %>% 
   group_by(id_student, activity_type, code_presentation, code_module) %>% 
-  summarize(sum_click = sum(sum_click))
+  summarize(sum_click = mean(sum_click))
 
-course_click <- MJ2 %>% 
+#Labels for facetting courses
+course_lab <- c("AAA" = "Course A", 
+            "BBB" = "Course B", 
+            "CCC" = "Course C",
+            "DDD" = "Course D",
+            "EEE" = "Course E",
+            "FFF" = "Course F",
+            "GGG" = "Course G")
+
+#Data to figure out labels for annotating - shows average daily clicks
+mean_click <- MJ2 %>% 
   group_by(activity_type, code_module) %>% 
-  summarize(total_sum = sum(sum_click)) %>% 
-  filter(code_module == "GGG")
+  summarize(total_sum = mean(sum_click)) %>% 
+  filter(code_module == "AAA" & activity_type == "oucontent" |
+         code_module == "BBB" & activity_type == "oucontent"  |
+         code_module == "CCC" & activity_type == "quiz" |
+         code_module == "DDD" & activity_type == "glossary" |
+         code_module == "EEE" & activity_type == "quiz" |
+         code_module == "FFF" & activity_type == "quiz" |
+         code_module == "GGG" & activity_type == "oucontent") 
+
+#Labels for annotating across facets... hope it works!
+f_labels <- data.frame(code_module = c("AAA",
+                                       "BBB",
+                                       "CCC",
+                                       "DDD",
+                                       "EEE",
+                                       "FFF",
+                                       "GGG"),
+                       label = c("4.44",
+                                 "3.88",
+                                 "5.11",
+                                 "7.23",
+                                 "8.15",
+                                 "9.36",
+                                 "5.85"))
+#It didn't work :(
 ```
 
 ```{r Data Display 2}
@@ -104,21 +137,44 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
                                         "forumng",
                                         "quiz",
                                         "homepage",
-                                        "subpage")),
-              aes(code_module, sum_click)) +
-  geom_jitter(color = "gray70",
-                  alpha = .4, 
-                  width = .2,
-                  height = .5,
-                  show.legend = FALSE) +
-  gghighlight(calculate_per_facet = TRUE) +
-  facet_grid(cols = vars(activity_type)) +
+                                        "glossary")),
+              aes(activity_type, sum_click)) +
+  geom_point(color = "#b69c91",
+             alpha = .4,
+             position = position_jitter(width = .2,
+                                        height = .5,
+                                        seed = 23)) +
+  geom_point(color = "#f7af00",
+             alpha = .4,
+             show.legend = FALSE,
+             position = position_jitter(width = .2,
+                                        height = .5,
+                                        seed = 23),
+             data = filter(MJ2, 
+                          code_module == "AAA" & activity_type == "oucontent" |
+                          code_module == "BBB" & activity_type == "oucontent" |
+                          code_module == "CCC" & activity_type == "quiz" |
+                          code_module == "DDD" & activity_type == "glossary" |
+                          code_module == "EEE" & activity_type == "quiz" |
+                          code_module == "FFF" & activity_type == "quiz" |
+                          code_module == "GGG" & activity_type == "oucontent")) +
+  facet_grid(cols = vars(code_module),
+             labeller = labeller(code_module = course_lab)) +
   coord_flip() +
-  theme_minimal() +
-  labs(title = "Student Interaction with Course Content",
-       caption = "Plot shows top 5 most interacted with content areas.",
-       y = "Number of student clicks per course",
-       x = "")
+  theme_light() +
+  theme(plot.title = element_text(face = "bold",
+                                  hjust = 0.5),
+        axis.text.x = element_blank()) +
+  scale_x_discrete(labels = c("oucontent" = "Course Content",
+                              "forumng" = "Forum",
+                              "quiz" = "Quiz",
+                              "homepage" = "Home Page",
+                              "glossary" = "Glossary")) +
+  labs(title = "Online Course Content Interaction 2013-2014",
+       caption = "Plot limited to show most interacted with content areas.",
+       y = "Daily Clicks by Enrolled Students",
+       x = "") +
+  geom_text(data = f_labels, label = label)
 ```
 
 ```{r Mutating Join 3}
