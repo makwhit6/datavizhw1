@@ -160,12 +160,14 @@ ggplot(MJ1, aes(score, highest_education, color = gender)) +
 
 ```{r Extra Credit (Optional)}
 
+#work in progress - just playing with adding a column to match the color with 
+
 higher_mean <- MJ1 %>%
   mutate(higher_mean = mean(score)) %>%
   summarize(higher_mean = unique(higher_mean))
 
 ggplot(MJ1, aes(score, highest_education, color = gender)) +
-  geom_line(color = higher_mean, size = 2) +
+  geom_line(aes(higher_mean, color = "#636363", size = 2)) +
   geom_point(size = 3) +
   facet_wrap(~final_result) +
   labs(x = "Average Score",
