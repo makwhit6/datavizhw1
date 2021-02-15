@@ -178,10 +178,26 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
 ```
 
 ```{r Mutating Join 3}
+reg_stu_info <- stu_reg %>% 
+  left_join(stu_info, 
+            by =c ("code_module", "code_presentation", "id_student")) 
+
 
 ```
-
+## I am not sure if this really answers my question as clearly as I expected it to. I guess I can tell that students who passed with distinction were very unlikely to register late for the course, anyhow.
 ```{r Data Display 3}
+ggplot(reg_stu_info, aes(x=final_result, y=date_registration )) +
+  geom_violin(scale = "area", fill = "cornflowerblue") +
+  scale_x_discrete(limits= c("Withdrawn", "Fail", "Pass", "Distinction"))+
+  labs(title = 'Do Earlier Prepared Students Fare Better?', 
+       subtitle = 'Registration Dates vs Final Outcomes', 
+       y = 'Relative Registration Date',
+       x = 'Final Score')+ 
+  theme(plot.title = element_text(face = 'bold'),
+        plot.subtitle = element_text(face = 'italic'))
+  
+  #  geom_dotplot(binaxis = "y", stackdir = "center", dotsize =.01) 
+
 
 ```
 
