@@ -114,14 +114,15 @@ mean_click <- MJ2 %>%
          code_module == "FFF" & activity_type == "quiz" |
          code_module == "GGG" & activity_type == "oucontent") 
 
-#Labels for annotating across facets... hope it works!
-f_labels <- data.frame(code_module = c("AAA",
-                                       "BBB",
-                                       "CCC",
-                                       "DDD",
-                                       "EEE",
-                                       "FFF",
-                                       "GGG"),
+# Labels for annotating across facets... hope it works!
+f_labels <- data.frame(code_module = factor(
+                               c("AAA",
+                                 "BBB",
+                                 "CCC",
+                                 "DDD",
+                                 "EEE",
+                                 "FFF",
+                                 "GGG")),
                        label = c("4.44",
                                  "3.88",
                                  "5.11",
@@ -129,7 +130,10 @@ f_labels <- data.frame(code_module = c("AAA",
                                  "8.15",
                                  "9.36",
                                  "5.85"))
-#It didn't work :(
+# It didn't work :(
+# I've spent too much time trying to get this figured out so I'm moving on.
+# Feel free to tinker with labels--the goal was to label the highlighted
+# group within each facet (course) with average number of clicks.
 ```
 
 ```{r Data Display 2}
@@ -170,11 +174,10 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
                               "quiz" = "Quiz",
                               "homepage" = "Home Page",
                               "glossary" = "Glossary")) +
-  labs(title = "Online Course Content Interaction 2013-2014",
+  labs(title = "Top Online Content Interaction 2013-2014",
        caption = "Plot limited to show most interacted with content areas.",
        y = "Daily Clicks by Enrolled Students",
-       x = "") +
-  geom_text(data = f_labels, label = label)
+       x = "")
 ```
 
 ```{r Mutating Join 3}
