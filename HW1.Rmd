@@ -188,7 +188,7 @@ reg_stu_info <- stu_reg %>%
 
 
 ```
-## I am not sure if this really answers my question as clearly as I expected it to. I guess I can tell that students who passed with distinction were very unlikely to register late for the course, anyhow.
+## I am not sure if this really answers my question as clearly as I expected it to. I guess I can tell that students who passed with distinction were very unlikely to register late for the course, anyhow. Also I guess I noticed that the eventually "Withdrawn" students didn't have as pronounced of a widening about a month before the course started. Interesting.
 ```{r Data Display 3}
 ggplot(reg_stu_info, aes(x=final_result, y=date_registration )) +
   geom_violin(scale = "area", fill = "cornflowerblue") +
