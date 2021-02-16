@@ -105,7 +105,7 @@ course_lab <- c("AAA" = "Course A",
 #Data to figure out labels for annotating - shows average daily clicks
 mean_click <- MJ2 %>% 
   group_by(activity_type, code_module) %>% 
-  summarize(total_sum = mean(sum_click)) %>% 
+  summarize(total_sum = round(mean(sum_click), digits = 1)) %>% 
   filter(code_module == "AAA" & activity_type == "oucontent" |
          code_module == "BBB" & activity_type == "oucontent"  |
          code_module == "CCC" & activity_type == "quiz" |
@@ -123,13 +123,13 @@ f_labels <- data.frame(code_module = factor(
                                  "EEE",
                                  "FFF",
                                  "GGG")),
-                       label = c("4.44",
-                                 "3.88",
-                                 "5.11",
-                                 "7.23",
-                                 "8.15",
-                                 "9.36",
-                                 "5.85"))
+                       label = c(4.44,
+                                 3.88,
+                                 5.11,
+                                 7.23,
+                                 8.15,
+                                 9.36,
+                                 5.85))
 # It didn't work :(
 # I've spent too much time trying to get this figured out so I'm moving on.
 # Feel free to tinker with labels--the goal was to label the highlighted
@@ -154,7 +154,7 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
              position = position_jitter(width = .2,
                                         height = .5,
                                         seed = 23),
-             data = filter(MJ2, 
+             data = filter(MJ2,
                           code_module == "AAA" & activity_type == "oucontent" |
                           code_module == "BBB" & activity_type == "oucontent" |
                           code_module == "CCC" & activity_type == "quiz" |
@@ -164,6 +164,7 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
                           code_module == "GGG" & activity_type == "oucontent")) +
   facet_grid(cols = vars(code_module),
              labeller = labeller(code_module = course_lab)) +
+  geom_text(data = mean_click, aes(x = activity_type, y = 10, label = total_sum)) +
   coord_flip() +
   theme_light() +
   theme(plot.title = element_text(face = "bold",
