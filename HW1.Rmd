@@ -13,12 +13,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(here)
 library(tidyverse)
-library(dplyr)
+#library(dplyr) # you shouldn't need to load dplyr, because it's loaded with the tidyverse
 library(gghighlight)
 ```
 
 ```{r Read in Data}
-here::here("data")
+#here::here("data")
 
 assessments <- read_csv(here("data", "assessments.csv"))
 courses     <- read_csv(here("data", "courses.csv"))
@@ -31,7 +31,6 @@ vle         <- read_csv(here("data", "vle.csv"))
 
 
 ```{r Mutating Join 1}
-
 MJ1 <- left_join(stu_info, stu_assess) %>% 
   select(id_student,
          final_result,
@@ -49,17 +48,34 @@ MJ1 <- left_join(stu_info, stu_assess) %>%
              "HE Qualification",
              "Post Graduate Qualification"))
 
+# Unfortunately the above is an error. We can confirm this with the following
+# stu_info %>% 
+#   count(id_student) %>% 
+#   filter(n > 1)
+# 
+# stu_assess %>% 
+#   count(id_student) %>% 
+#   filter(n > 1)
+# 
+# Both of the above return rows, which means if you join the datasets by 
+# `id_student` you're in a many-to-many join situation.
+#
+# I've removed two points from the above.
 ```
 
 ```{r Data Display 1}
 
-ggplot(MJ1, aes(score, highest_education, color = gender)) +
-    geom_point() +
+ggplot(MJ1, aes(score, highest_education)) +
+  geom_line() +
+  geom_point(aes(color = gender)) +
   facet_wrap(~final_result) +
   labs(x = "Average Score",
        y = "Highest Education ") +
   scale_color_manual(values = c("#66B2FF", "#0066CC"))
 
+# I made a few suggested edits to the above. I tend to put groupings on the
+# specific layer, rather than at the top layer where it will bleed through to
+# all of the others. I also like adding the line between the points.
 ```
 
 ```{r Mutating Join 2}
@@ -92,6 +108,8 @@ MJ2 <- left_join(stu_vle, vle) %>%
                                            "repeatactivity"))) %>% 
   group_by(id_student, activity_type, code_presentation, code_module) %>% 
   summarize(sum_click = mean(sum_click))
+
+# Nice join!
 
 #Labels for facetting courses
 course_lab <- c("AAA" = "Course A", 
@@ -134,6 +152,9 @@ f_labels <- data.frame(code_module = factor(
 # I've spent too much time trying to get this figured out so I'm moving on.
 # Feel free to tinker with labels--the goal was to label the highlighted
 # group within each facet (course) with average number of clicks.
+
+# I'm not exactly sure what you were after here but I'd be happy to walk through
+# it with you if you'd like to schedule a time to meet
 ```
 
 ```{r Data Display 2}
@@ -179,6 +200,11 @@ ggplot(subset(MJ2, activity_type %in% c("oucontent",
        caption = "Plot limited to show most interacted with content areas.",
        y = "Daily Clicks by Enrolled Students",
        x = "")
+
+# It looks like maybe you did get it to work?
+# oh... but maybe the jitter is still messed up? I wonder if you could have
+# created a variable in your dataset for the points you wanted to highlight,
+# then just use `aes(color = highlight_column)`?
 ```
 
 ```{r Mutating Join 3}
@@ -186,17 +212,17 @@ reg_stu_info <- stu_reg %>%
   left_join(stu_info, 
             by =c ("code_module", "code_presentation", "id_student")) 
 
-
+# Nice join!
 ```
 ## I am not sure if this really answers my question as clearly as I expected it to. I guess I can tell that students who passed with distinction were very unlikely to register late for the course, anyhow. Also I guess I noticed that the eventually "Withdrawn" students didn't have as pronounced of a widening about a month before the course started. Interesting.
 ```{r Data Display 3}
-ggplot(reg_stu_info, aes(x=final_result, y=date_registration )) +
+ggplot(reg_stu_info, aes(x = final_result, y = date_registration )) +
   geom_violin(scale = "area", fill = "cornflowerblue") +
-  scale_x_discrete(limits= c("Withdrawn", "Fail", "Pass", "Distinction"))+
+  scale_x_discrete(limits = c("Withdrawn", "Fail", "Pass", "Distinction")) +
   labs(title = 'Do Earlier Prepared Students Fare Better?', 
        subtitle = 'Registration Dates vs Final Outcomes', 
        y = 'Relative Registration Date',
-       x = 'Final Score')+ 
+       x = 'Final Score') + 
   theme(plot.title = element_text(face = 'bold'),
         plot.subtitle = element_text(face = 'italic'))
   
@@ -206,7 +232,6 @@ ggplot(reg_stu_info, aes(x=final_result, y=date_registration )) +
 ```
 
 ```{r Filtering Join}
-
 stu_assess_avg <- stu_assess %>%
   mutate(score = as.numeric(score)) %>% 
   group_by(id_student) %>%
@@ -219,6 +244,7 @@ cut_mean <- stu_assess_avg %>%
 
 semi_join(stu_assess, cut_mean)
   
+# 👍
 ```
 
 ```{r Reproduced Figure}
@@ -232,6 +258,8 @@ ggplot(MJ1, aes(score, highest_education, color = gender)) +
   scale_color_manual(values = c("#66B2FF", "#0066CC")) +
   theme_minimal()
 
+# Nice job. I would have liked to have seen `ncol = 1` passed to `facet_wrap()`
+# but generally this looks good.
 ```
 
 ```{r Extra Credit (Optional)}
@@ -251,4 +279,5 @@ ggplot(MJ1, aes(score, highest_education, color = gender)) +
   scale_color_manual(values = c("#66B2FF", "#0066CC")) +
   theme_minimal()
 
+# I got an error here
 ```
